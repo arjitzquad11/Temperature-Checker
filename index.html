@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chocopie Temperature Checker</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      transition: background-image 1s ease-in-out;
+      text-align: center;
+      color: white;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    input, button {
+      padding: 10px;
+      font-size: 18px;
+      margin-top: 20px;
+      border-radius: 5px;
+      border: none;
+    }
+
+    button {
+      background-color: #5a2d82;
+      color: white;
+      cursor: pointer;
+    }
+
+    #result {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 30px;
+      text-shadow: 1px 1px 2px black;
+    }
+
+    #chocopie {
+      margin: 20px auto;
+      width: 180px;
+      display: block;
+    }
+
+    .overlay {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 20px 40px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .flake {
+      position: fixed;
+      top: -50px;
+      z-index: 9999;
+      pointer-events: none;
+      user-select: none;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay">
+    <h1>🌡️ Chocopie Temperature Checker</h1>
+    <img id="chocopie" src="chocopie.gif" alt="Chocopie Animation">
+    <p>Enter the temperature (°C):</p>
+    <input type="number" id="tempInput" placeholder="e.g., 25">
+    <br>
+    <button onclick="checkTemperature()">Check</button>
+    <div id="result"></div>
+  </div>
+
+  <audio id="clickSound" src="click.mp3" preload="auto"></audio>
+
+  <script>
+    function checkTemperature() {
+      const temp = parseInt(document.getElementById("tempInput").value);
+      const result = document.getElementById("result");
+      const clickSound = document.getElementById("clickSound");
+
+      let bg = "";
+
+      if (isNaN(temp)) {
+        result.textContent = "Please enter a valid number.";
+        document.body.style.backgroundImage = "";
+        return;
+      }
+
+      // Play click sound
+      clickSound.play();
+
+      // Clear previous flakes
+      document.querySelectorAll(".flake").forEach(flake => flake.remove());
+
+      // Determine background and message
+      if (temp > 30) {
+        result.textContent = "🔥 It's Steaming Hot! Stay cool Chocopie!";
+        bg = "hot.jpeg";
+      } else if (temp > 20) {
+        result.textContent = "🌼 It's a Warm Day! Enjoy the breeze Chocopie!";
+        bg = "warm.jpeg";
+      } else if (temp > 10) {
+        result.textContent = "🍃 It's a Pleasant Day! Have a walk outside Chocopie!";
+        bg = "pleasant.jpeg";
+      } else {
+        result.textContent = "❄️ It's Very Cold! Snuggle up Chocopie!";
+        bg = "cold.jpeg";
+      }
+
+      // Change background
+      document.body.style.backgroundImage = `url('${bg}')`;
+
+      // Add animation effect
+      const flakeImg = temp <= 10 ? "snowflake.png" : "flower.png";
+
+      for (let i = 0; i < 30; i++) {
+        const flake = document.createElement("img");
+        flake.src = flakeImg;
+        flake.className = "flake";
+        flake.style.left = Math.random() * 100 + "vw";
+        flake.style.width = Math.random() * 20 + 20 + "px";
+        flake.style.animationDuration = Math.random() * 5 + 5 + "s";
+        flake.style.opacity = Math.random();
+        document.body.appendChild(flake);
+      }
+    }
+  </script>
+
+</body>
+</html>
